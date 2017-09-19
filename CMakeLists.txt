@@ -3,6 +3,17 @@ set(CMAKE_C_STANDARD 99)
 
 set(SOURCE_FILES
         src/main.c
+        src/get_env.c
+        src/prompt_message.c
+        src/freedom.c
+        src/exec_commands.c
+        src/utils.c
+        src/my_setenv.c
+        src/error.c
+        src/my_cd.c
+        src/my_unsetenv.c
+        src/my_echo.c
+        src/my_env.c
         )
 
 add_executable(minishell ${SOURCE_FILES})
