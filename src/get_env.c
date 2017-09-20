@@ -1,48 +1,61 @@
 #include "minishell.h"
 
-static void	get_path(t_env *e, char **env)
+char	**get_path(t_env *env)
 {
 	size_t			y;
 	char			**paths;
-	t_list			*new;
-
+	char 			*tmp;
 	y = 0;
-	while (env[y] && ft_strnequ("PATH=", env[y], 5) == false)
-		y++;
-	if (env[y] == NULL || (paths = ft_strsplit(env[y] + 5, ':')) == NULL)
-		exit_minishell(e, EXIT_FAILURE);
-	y = 0;
-	while (paths[y] != NULL)
+	while (env->g_env_var[y] && ft_strnequ("PATH=", env->g_env_var[y], 5) == false)
 	{
-		if (e->path == NULL)
-		{
-			if ((e->path = ft_lstnew(paths[y], ft_strlen(paths[y]))) == NULL)
-				exit_minishell(e, EXIT_FAILURE);
-		}
-		else
-		{
-			if ((new = ft_lstnew(paths[y], ft_strlen(paths[y]))) == NULL)
-				exit_minishell(e, EXIT_FAILURE);
-			ft_lstadd(&e->path, new);
-		}
 		y++;
 	}
-	free_str_array(paths);
+	if (env->g_env_var[y] == NULL || (paths = ft_strsplit(env->g_env_var[y] + 5, ':')) == NULL)
+		return (NULL);
+	y = 0;
+	while (paths[y])
+	{
+		if ((tmp = ft_strjoin(paths[y], "/")) == NULL)
+			return (NULL);
+		free(paths[y]);
+		paths[y] = tmp;
+		y++;
+	}
+	return (paths);
 }
 
-static void	get_home(t_env *e, char **env)
+char 		*get_old_pwd(t_env *env)
 {
-	size_t y;
+	size_t	i;
 
-	y = 0;
-	while (env[y] && ft_strnequ("HOME=", env[y], 5) == false)
+	i = 0;
+	while (env->g_env_var[i] != NULL)
 	{
-		y++;
+		if (ft_strnequ("OLDPWD=", env->g_env_var[i], 7) == true)
+		{
+			return (env->g_env_var[i] + 7);
+		}
+		i++;
 	}
-	if (env[y] == NULL || (e->home = ft_strdup(env[y] + 5)) == NULL)
+	return (NULL);
+}
+
+char		*get_home(t_env *env)
+{
+	size_t	i;
+
+	i = 0;
+	if (env->g_env_var == NULL)
+		return (NULL);
+	while (env->g_env_var[i] != NULL)
 	{
-		exit_minishell(e, EXIT_FAILURE);
+		if (ft_strnequ("HOME=", env->g_env_var[i], 5) == true)
+		{
+			return (env->g_env_var[i] + 5);
+		}
+		i++;
 	}
+	return (NULL);
 }
 
 static void	fill_genv(t_env *e, char **env)
@@ -54,14 +67,14 @@ static void	fill_genv(t_env *e, char **env)
 	{
 		i++;
 	}
-	if ((g_env_var = ft_memalloc(sizeof(char *) * (i + 1))) == NULL)
+	if ((e->g_env_var = ft_memalloc(sizeof(char *) * (i + 1))) == NULL)
 	{
 		exit_minishell(e, EXIT_FAILURE);
 	}
 	i = 0;
 	while (env[i] != NULL)
 	{
-		if ((g_env_var[i] = ft_strdup(env[i])) == NULL)
+		if ((e->g_env_var[i] = ft_strdup(env[i])) == NULL)
 		{
 			exit_minishell(e, EXIT_FAILURE);
 		}
@@ -78,8 +91,6 @@ t_env		*get_env(char **env)
 	{
 		exit_minishell(e, EXIT_FAILURE);
 	}
-	get_path(e, env);
-	get_home(e, env);
 	fill_genv(e, env);
 	return (e);
 }

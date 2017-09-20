@@ -1,6 +1,39 @@
 #include "minishell.h"
 
-int ignore_command(char *cmd)
+void	replace_tabs_by_spaces(char *str)
+{
+	size_t i;
+
+	if (str == NULL)
+		return ;
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == '\t')
+			str[i] = ' ';
+		i++;
+	}
+}
+
+void	trim_str_array(char **arr, t_env *env)
+{
+	size_t i;
+	char *trim;
+
+	if (arr == NULL)
+		return ;
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		if ((trim = ft_strtrim(arr[i])) == NULL)
+			exit_minishell(env, EXIT_FAILURE);
+		ft_strdel(&arr[i]);
+		arr[i] = trim;
+		i++;
+	}
+}
+
+int		ignore_command(char *cmd)
 {
 	size_t i;
 

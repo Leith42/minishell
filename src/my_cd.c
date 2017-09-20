@@ -6,18 +6,18 @@ static void	change_oldpwd_var(char *old_pwd, t_env *env)
 	size_t	line;
 
 	line = 0;
-	while (g_env_var[line])
+	while (env->g_env_var[line])
 	{
-		if ((ft_strnequ("OLDPWD=", g_env_var[line], 7)) == true)
+		if ((ft_strnequ("OLDPWD=", env->g_env_var[line], 7)) == true)
 			break ;
 		line++;
 	}
-	if (g_env_var[line] != NULL)
+	if (env->g_env_var[line] != NULL)
 	{
 		if ((join = ft_strjoin("OLDPWD=", old_pwd)) == NULL)
 			exit_minishell(env, EXIT_FAILURE);
-		ft_strdel(&g_env_var[line]);
-		g_env_var[line] = join;
+		ft_strdel(&env->g_env_var[line]);
+		env->g_env_var[line] = join;
 	}
 }
 
@@ -41,12 +41,22 @@ static int	change_working_dir(char *new_path, char *working_dir, t_env *env)
 int			my_cd(t_env *env, char **args)
 {
 	char buffer[PATH_MAX];
+	char *path;
 
 	if ((getcwd(buffer, PATH_MAX)) == NULL)
 		exit_minishell(env, EXIT_FAILURE);
-	if (args[0] == NULL || args[0][0] == '~')
+	if ((args[0] == NULL || args[0][0] == '~'))
 	{
-		return (change_working_dir(env->home, buffer, env));
+		if ((path = get_home(env)) == NULL)
+			return (false);
+		return (change_working_dir(path, buffer, env));
+	}
+	else if ((args[0][0]) == '-')
+	{
+		if ((path = get_old_pwd(env)) == NULL)
+			return (false);
+		ft_putendl(path);
+		return (change_working_dir(path, buffer, env));
 	}
 	else
 	{

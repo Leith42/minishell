@@ -14,6 +14,7 @@ set(SOURCE_FILES
         src/my_unsetenv.c
         src/my_echo.c
         src/my_env.c
+        src/signals.c
         )
 
 add_executable(minishell ${SOURCE_FILES})

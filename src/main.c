@@ -3,7 +3,6 @@
 void	exit_minishell(t_env *env, int exit_code)
 {
 	free_env(env);
-	free_str_array(g_env_var);
 	ft_putchar('\n');
 	exit(exit_code);
 }
@@ -32,9 +31,11 @@ int		main(int argc, char **argv, char **e)
 	env = get_env(e);
 	while (true)
 	{
+		signal(SIGINT, parent_signal);
 		print_prompt(env);
 		if ((gnl = get_commands(env)) > 0)
 		{
+			trim_str_array(env->stdin, env);
 			exec_commands(env);
 			free_str_array(env->stdin);
 			env->stdin = NULL;

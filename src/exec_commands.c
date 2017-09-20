@@ -1,56 +1,77 @@
 #include "minishell.h"
 
-static int execute(char *cmd_path, char **cmd_with_args)
+static int execute(char *cmd_path, char **cmd_with_args, t_env *env)
 {
 	pid_t	pid;
 
+	signal(SIGINT, child_signal);
 	if ((pid = fork()) == 0)
 	{
-		execve(cmd_path, cmd_with_args, g_env_var);
+		execve(cmd_path, cmd_with_args, env->g_env_var);
 	}
 	else if (pid < 0)
 	{
 		print_error("Fork failed to create a child process.");
+		return (false);
 	}
 	wait(&pid);
 	return (true);
 }
 
-static int check_execution(char *cmd_path, char **cmd_with_args, struct stat cmd_stat)
+static int check_if_bin(char **path, char **cmd_with_args, t_env *env)
 {
-	if (cmd_stat.st_mode & S_IFREG)
+	char		*cmd_path;
+	struct stat	s;
+	size_t 		i;
+
+	i = 0;
+	cmd_path = NULL;
+	if (path == NULL)
+		return (false);
+	while (path[i] != NULL)
 	{
-		if (cmd_stat.st_mode & S_IXUSR)
+		if ((cmd_path = ft_strjoin(path[i], cmd_with_args[0])) == NULL)
 		{
-			execute(cmd_path, cmd_with_args);
+			exit_minishell(env, EXIT_FAILURE);
 		}
+		if (lstat(cmd_path, &s) != ERROR && s.st_mode & S_IFREG && s.st_mode & S_IXUSR)
+		{
+			free_str_array(path);
+			execute(cmd_path, cmd_with_args, env);
+			ft_strdel(&cmd_path);
+			return (true);
+		}
+		ft_strdel(&cmd_path);
+		i++;
 	}
 	ft_strdel(&cmd_path);
-	return (true);
+	free_str_array(path);
+	return (false);
 }
 
-static int check_if_bin(t_list *path, char **cmd_with_args)
+static int check_if_path(char **cmd_with_args, t_env *env)
 {
-	char		*join_cmd_path;
-	char		*join_slash_path;
-	struct stat	s;
+	char			*home;
+	struct stat		s;
 
-	join_cmd_path = NULL;
-	while (path != NULL)
+	if (ft_strequ(cmd_with_args[0], "~") == true)
 	{
-		if ((join_slash_path = ft_strjoin(path->content, "/")) == NULL
-			|| (join_cmd_path = ft_strjoin(join_slash_path, cmd_with_args[0])) == NULL)
-		{
-			exit(EXIT_FAILURE);
-		}
-		ft_strdel(&join_slash_path);
-		if (lstat(join_cmd_path, &s) == ERROR)
-			ft_strdel(&join_cmd_path);
-		else
-			return (check_execution(join_cmd_path, cmd_with_args, s));
-		path = path->next;
+		if ((home = ft_strdup(get_home(env))) == NULL)
+			return (true);
+		ft_strdel(&cmd_with_args[0]);
+		cmd_with_args[0] = home;
 	}
-	ft_strdel(&join_cmd_path);
+	if (lstat(cmd_with_args[0], &s) != ERROR)
+	{
+		if (s.st_mode & S_IFDIR)
+		{
+			return (my_cd(env, cmd_with_args));
+		}
+		else if (s.st_mode & S_IFREG && s.st_mode & S_IXUSR)
+		{
+			return (execute(cmd_with_args[0], cmd_with_args, env));
+		}
+	}
 	return (false);
 }
 
@@ -63,9 +84,9 @@ static int check_if_builtin(char **cmd_with_args, t_env *env)
 	else if (ft_strequ(cmd_with_args[0], UNSETENV) == true)
 		my_unsetenv(env, cmd_with_args + 1);
 	else if (ft_strequ(cmd_with_args[0], ECHO) == true)
-		my_echo(cmd_with_args + 1);
+		my_echo(cmd_with_args + 1, env);
 	else if (ft_strequ(cmd_with_args[0], ENV) == true)
-		my_env();
+		my_env(env);
 	else if (ft_strequ(cmd_with_args[0], EXIT) == true)
 	{
 		free_str_array(cmd_with_args);
@@ -74,21 +95,6 @@ static int check_if_builtin(char **cmd_with_args, t_env *env)
 	else
 		return (false);
 	return (true);
-}
-
-static int check_if_path(char **cmd_with_args)
-{
-	struct stat		s;
-
-	if (lstat(cmd_with_args[0], &s) != ERROR)
-	{
-		if (s.st_mode & S_IFDIR)
-		{
-			puts("dir loul");
-			return (true);
-		}
-	}
-	return (false);
 }
 
 int 	exec_commands(t_env *env)
@@ -101,11 +107,13 @@ int 	exec_commands(t_env *env)
 	{
 		if (ignore_command(env->stdin[i]) == false)
 		{
+			replace_tabs_by_spaces(env->stdin[i]);
 			if ((cmd_with_args = ft_strsplit(env->stdin[i], ' ')) == NULL)
-				exit(EXIT_FAILURE);
+				exit_minishell(env, EXIT_FAILURE);
+			trim_str_array(cmd_with_args, env);
 			if (check_if_builtin(cmd_with_args, env) == false
-				&& check_if_bin(env->path, cmd_with_args) == false
-				&& check_if_path(cmd_with_args) == false)
+				&& check_if_bin(get_path(env), cmd_with_args, env) == false
+				&& check_if_path(cmd_with_args, env) == false)
 			{
 				ft_printf("minishell: command not found: %s\n", cmd_with_args[0]);
 			}

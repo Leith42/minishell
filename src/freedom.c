@@ -17,18 +17,16 @@ void	free_str_array(char **arr)
 
 void	free_env(t_env *env)
 {
-	t_list *t;
-
 	if (env == NULL)
 		return ;
 	free_str_array(env->stdin);
-	free(env->home);
-	while (env->path)
-	{
-		t = env->path->next;
-		free(env->path->content);
-		free(env->path);
-		env->path = t;
-	}
+	free_str_array(env->g_env_var);
 	free(env);
+}
+
+void	free_lst(void *content, size_t n)
+{
+	if (content != NULL)
+		ft_memdel(&content);
+	(void)n;
 }
