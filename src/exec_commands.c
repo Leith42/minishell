@@ -7,7 +7,7 @@ static int execute(char *cmd_path, char **cmd_with_args, t_env *env)
 	signal(SIGINT, child_signal);
 	if ((pid = fork()) == 0)
 	{
-		execve(cmd_path, cmd_with_args, env->g_env_var);
+		execve(cmd_path, cmd_with_args, env->env_var);
 	}
 	else if (pid < 0)
 	{

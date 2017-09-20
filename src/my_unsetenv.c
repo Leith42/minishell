@@ -7,25 +7,25 @@ static void	del_var(int line, t_env *env)
 	size_t	n;
 
 	i = 0;
-	while (env->g_env_var[i] != NULL)
+	while (env->env_var[i] != NULL)
 		i++;
 	if ((new = ft_memalloc(sizeof(char *) * (i + 2))) == NULL)
 		exit_minishell(env, EXIT_FAILURE);
 	i = 0;
 	n = 0;
-	while (env->g_env_var[i] != NULL)
+	while (env->env_var[i] != NULL)
 	{
 		if (i != line)
 		{
-			if ((new[n] = ft_strdup(env->g_env_var[i])) == NULL)
+			if ((new[n] = ft_strdup(env->env_var[i])) == NULL)
 				exit_minishell(env, EXIT_FAILURE);
 			n++;
 		}
-		ft_strdel(&env->g_env_var[i]);
+		ft_strdel(&env->env_var[i]);
 		i++;
 	}
-	free(env->g_env_var);
-	env->g_env_var = new;
+	free(env->env_var);
+	env->env_var = new;
 }
 
 int			my_unsetenv(t_env *env, char **args)
@@ -37,7 +37,7 @@ int			my_unsetenv(t_env *env, char **args)
 		return (false);
 	}
 	line = get_var_line(ft_strjoin(args[0], "="), env);
-	if (env->g_env_var[line] == NULL)
+	if (env->env_var[line] == NULL)
 	{
 		print_error("unsetenv: environment variable not found.");
 		return (false);

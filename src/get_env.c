@@ -6,11 +6,11 @@ char	**get_path(t_env *env)
 	char			**paths;
 	char 			*tmp;
 	y = 0;
-	while (env->g_env_var[y] && ft_strnequ("PATH=", env->g_env_var[y], 5) == false)
+	while (env->env_var[y] && ft_strnequ("PATH=", env->env_var[y], 5) == false)
 	{
 		y++;
 	}
-	if (env->g_env_var[y] == NULL || (paths = ft_strsplit(env->g_env_var[y] + 5, ':')) == NULL)
+	if (env->env_var[y] == NULL || (paths = ft_strsplit(env->env_var[y] + 5, ':')) == NULL)
 		return (NULL);
 	y = 0;
 	while (paths[y])
@@ -29,11 +29,11 @@ char 		*get_old_pwd(t_env *env)
 	size_t	i;
 
 	i = 0;
-	while (env->g_env_var[i] != NULL)
+	while (env->env_var[i] != NULL)
 	{
-		if (ft_strnequ("OLDPWD=", env->g_env_var[i], 7) == true)
+		if (ft_strnequ("OLDPWD=", env->env_var[i], 7) == true)
 		{
-			return (env->g_env_var[i] + 7);
+			return (env->env_var[i] + 7);
 		}
 		i++;
 	}
@@ -45,13 +45,13 @@ char		*get_home(t_env *env)
 	size_t	i;
 
 	i = 0;
-	if (env->g_env_var == NULL)
+	if (env->env_var == NULL)
 		return (NULL);
-	while (env->g_env_var[i] != NULL)
+	while (env->env_var[i] != NULL)
 	{
-		if (ft_strnequ("HOME=", env->g_env_var[i], 5) == true)
+		if (ft_strnequ("HOME=", env->env_var[i], 5) == true)
 		{
-			return (env->g_env_var[i] + 5);
+			return (env->env_var[i] + 5);
 		}
 		i++;
 	}
@@ -67,14 +67,14 @@ static void	fill_genv(t_env *e, char **env)
 	{
 		i++;
 	}
-	if ((e->g_env_var = ft_memalloc(sizeof(char *) * (i + 1))) == NULL)
+	if ((e->env_var = ft_memalloc(sizeof(char *) * (i + 1))) == NULL)
 	{
 		exit_minishell(e, EXIT_FAILURE);
 	}
 	i = 0;
 	while (env[i] != NULL)
 	{
-		if ((e->g_env_var[i] = ft_strdup(env[i])) == NULL)
+		if ((e->env_var[i] = ft_strdup(env[i])) == NULL)
 		{
 			exit_minishell(e, EXIT_FAILURE);
 		}

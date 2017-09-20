@@ -9,9 +9,9 @@ int			get_var_line(char *var, t_env *env)
 		exit_minishell(env, EXIT_FAILURE);
 	i = 0;
 	var_len = ft_strlen(var);
-	while (env->g_env_var[i] != NULL)
+	while (env->env_var[i] != NULL)
 	{
-		if ((ft_strnequ(var, env->g_env_var[i], var_len)) == true)
+		if ((ft_strnequ(var, env->env_var[i], var_len)) == true)
 			break ;
 		i++;
 	}
@@ -27,16 +27,16 @@ static int	new_and_cpy(int size, char *variable, t_env *env)
 	if ((new = ft_memalloc(sizeof(char *) * (size))) == NULL)
 		return (ERROR);
 	i = 0;
-	while (env->g_env_var[i] != NULL)
+	while (env->env_var[i] != NULL)
 	{
-		if ((new[i] = ft_strdup(env->g_env_var[i])) == NULL)
+		if ((new[i] = ft_strdup(env->env_var[i])) == NULL)
 			return (ERROR);
-		ft_strdel(&env->g_env_var[i]);
+		ft_strdel(&env->env_var[i]);
 		i++;
 	}
 	new[i] = variable;
-	free(env->g_env_var);
-	env->g_env_var = new;
+	free(env->env_var);
+	env->env_var = new;
 	return (true);
 }
 
@@ -56,10 +56,10 @@ void		add_new_var(int line, char **args, t_env *env)
 		if (name == NULL || (name_and_value = ft_strjoin(name, args[1])) == NULL)
 			exit_minishell(env, EXIT_FAILURE);
 	ft_strdel(&name);
-	if (env->g_env_var[line] != NULL)
+	if (env->env_var[line] != NULL)
 	{
-		ft_strdel(&env->g_env_var[line]);
-		env->g_env_var[line] = name_and_value;
+		ft_strdel(&env->env_var[line]);
+		env->env_var[line] = name_and_value;
 	}
 	else
 	{

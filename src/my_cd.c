@@ -6,18 +6,18 @@ static void	change_oldpwd_var(char *old_pwd, t_env *env)
 	size_t	line;
 
 	line = 0;
-	while (env->g_env_var[line])
+	while (env->env_var[line])
 	{
-		if ((ft_strnequ("OLDPWD=", env->g_env_var[line], 7)) == true)
+		if ((ft_strnequ("OLDPWD=", env->env_var[line], 7)) == true)
 			break ;
 		line++;
 	}
-	if (env->g_env_var[line] != NULL)
+	if (env->env_var[line] != NULL)
 	{
 		if ((join = ft_strjoin("OLDPWD=", old_pwd)) == NULL)
 			exit_minishell(env, EXIT_FAILURE);
-		ft_strdel(&env->g_env_var[line]);
-		env->g_env_var[line] = join;
+		ft_strdel(&env->env_var[line]);
+		env->env_var[line] = join;
 	}
 }
 

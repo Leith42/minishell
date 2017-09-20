@@ -5,11 +5,11 @@ static int	print_value(char *var, t_env *env)
 	size_t i;
 
 	i = 0;
-	while (env->g_env_var[i] != NULL)
+	while (env->env_var[i] != NULL)
 	{
-		if (ft_strnequ(var + 1, env->g_env_var[i], ft_strlen(var) - 1))
+		if (ft_strnequ(var + 1, env->env_var[i], ft_strlen(var) - 1))
 		{
-			ft_putstr(env->g_env_var[i] + ft_strlen(var + 1) + 1);
+			ft_putstr(env->env_var[i] + ft_strlen(var + 1) + 1);
 			return (true);
 		}
 		i++;

@@ -20,7 +20,7 @@ void	free_env(t_env *env)
 	if (env == NULL)
 		return ;
 	free_str_array(env->stdin);
-	free_str_array(env->g_env_var);
+	free_str_array(env->env_var);
 	free(env);
 }
 

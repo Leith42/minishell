@@ -17,7 +17,7 @@
 
 typedef struct	s_env
 {
-	char	**g_env_var;
+	char	**env_var;
 	char	**stdin;
 }				t_env;
 
