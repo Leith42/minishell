@@ -32,7 +32,7 @@ void		print_error(char *error);
 int			my_setenv(t_env *env, char **args);
 void		exit_minishell(t_env *env, int exit_type);
 int			my_unsetenv(t_env *env, char **args);
-int			get_var_line(char *var, t_env *e);
+size_t	get_var_line(char *var, t_env *e);
 int			my_echo(char **args, t_env *env);
 int			my_cd(t_env *env, char **args);
 void		my_env(t_env *env);
@@ -46,4 +46,3 @@ void		parent_signal(int signal);
 void		child_signal(int code);
 
 #endif
-

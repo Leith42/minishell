@@ -29,6 +29,8 @@ int		main(int argc, char **argv, char **e)
 	t_env	*env;
 
 	env = get_env(e);
+	(void)argc;
+	(void)argv;
 	while (true)
 	{
 		signal(SIGINT, parent_signal);
@@ -43,7 +45,6 @@ int		main(int argc, char **argv, char **e)
 		else
 		{
 			exit_minishell(env, gnl == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
-			return 0; // mute warning
 		}
 	}
 }

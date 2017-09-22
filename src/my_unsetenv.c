@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static void	del_var(int line, t_env *env)
+static void	del_var(size_t line, t_env *env)
 {
 	char	**new;
 	size_t	i;
@@ -30,7 +30,7 @@ static void	del_var(int line, t_env *env)
 
 int			my_unsetenv(t_env *env, char **args)
 {
-	int line;
+	size_t	line;
 
 	if (args[0] == NULL || args[1] != NULL)
 	{

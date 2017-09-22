@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-int			get_var_line(char *var, t_env *env)
+size_t			get_var_line(char *var, t_env *env)
 {
-	int		i;
+	size_t	i;
 	size_t	var_len;
 
 	if (var == NULL)
@@ -19,7 +19,7 @@ int			get_var_line(char *var, t_env *env)
 	return (i);
 }
 
-static int	new_and_cpy(int size, char *variable, t_env *env)
+static int	new_and_cpy(size_t size, char *variable, t_env *env)
 {
 	size_t i;
 	char **new;
@@ -40,11 +40,12 @@ static int	new_and_cpy(int size, char *variable, t_env *env)
 	return (true);
 }
 
-void		add_new_var(int line, char **args, t_env *env)
+void		add_new_var(size_t line, char **args, t_env *env)
 {
 	char *name;
 	char *name_and_value;
 
+	name_and_value = NULL;
 	name = ft_strjoin(args[0], "=");
 	if ((args[1][0] == '"') && (args[1][ft_strlen(args[1]) - 1]) == '"')
 	{
@@ -52,8 +53,7 @@ void		add_new_var(int line, char **args, t_env *env)
 			exit_minishell(env, EXIT_FAILURE);
 		name_and_value[ft_strlen(name_and_value) - 1] = '\0';
 	}
-	else
-		if (name == NULL || (name_and_value = ft_strjoin(name, args[1])) == NULL)
+	else if (name == NULL || (name_and_value = ft_strjoin(name, args[1])) == NULL)
 			exit_minishell(env, EXIT_FAILURE);
 	ft_strdel(&name);
 	if (env->env_var[line] != NULL)
@@ -61,16 +61,13 @@ void		add_new_var(int line, char **args, t_env *env)
 		ft_strdel(&env->env_var[line]);
 		env->env_var[line] = name_and_value;
 	}
-	else
-	{
-		if ((new_and_cpy(line + 2, name_and_value, env)) == ERROR)
+	else if ((new_and_cpy(line + 2, name_and_value, env)) == ERROR)
 			exit_minishell(env, EXIT_FAILURE);
-	}
 }
 
 int			my_setenv(t_env *env, char **args)
 {
-	int line;
+	size_t line;
 
 	if ((args[0] == NULL) || (args[1] == NULL) || (args[2] != NULL))
 	{

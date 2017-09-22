@@ -34,7 +34,7 @@ int			my_echo(char **args, t_env *env)
 				ft_putchar(' ');
 			if ((args[i][0] == '"') && (args[i][ft_strlen(args[i]) - 1]) == '"')
 				ft_putnstr(args[i] + 1, ft_strlen((args[i] + 1)) - 1);
-			else if ((args[i][0] == '$'))
+			else if (args[i][0] == '$')
 				print_value(args[i], env);
 			else
 				ft_putstr(args[i]);
