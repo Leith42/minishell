@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aazri <aazri@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/25 11:45:45 by aazri             #+#    #+#             */
+/*   Updated: 2017/09/25 11:45:54 by aazri            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	replace_tabs_by_spaces(char *str)
@@ -17,8 +29,8 @@ void	replace_tabs_by_spaces(char *str)
 
 void	trim_str_array(char **arr, t_env *env)
 {
-	size_t i;
-	char *trim;
+	size_t	i;
+	char	*trim;
 
 	if (arr == NULL)
 		return ;

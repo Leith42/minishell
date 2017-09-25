@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   my_unsetenv.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aazri <aazri@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/25 12:17:24 by aazri             #+#    #+#             */
+/*   Updated: 2017/09/25 12:17:25 by aazri            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	del_var(size_t line, t_env *env)
@@ -34,6 +46,8 @@ int			my_unsetenv(t_env *env, char **args)
 
 	if (args[0] == NULL || args[1] != NULL)
 	{
+		print_error("unsetenv: invalid number of arguments.");
+		print_error("usage: unsetenv [name]");
 		return (false);
 	}
 	line = get_var_line(ft_strjoin(args[0], "="), env);

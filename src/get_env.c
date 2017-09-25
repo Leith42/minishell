@@ -1,16 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_env.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aazri <aazri@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/25 11:50:18 by aazri             #+#    #+#             */
+/*   Updated: 2017/09/25 11:52:45 by aazri            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char	**get_path(t_env *env)
+char		**get_path(t_env *env)
 {
-	size_t			y;
-	char			**paths;
-	char 			*tmp;
+	size_t	y;
+	char	**paths;
+	char	*tmp;
+
 	y = 0;
 	while (env->env_var[y] && ft_strnequ("PATH=", env->env_var[y], 5) == false)
 	{
 		y++;
 	}
-	if (env->env_var[y] == NULL || (paths = ft_strsplit(env->env_var[y] + 5, ':')) == NULL)
+	if (env->env_var[y] == NULL || \
+		(paths = ft_strsplit(env->env_var[y] + 5, ':')) == NULL)
 		return (NULL);
 	y = 0;
 	while (paths[y])
@@ -24,7 +38,7 @@ char	**get_path(t_env *env)
 	return (paths);
 }
 
-char 		*get_old_pwd(t_env *env)
+char		*get_old_pwd(t_env *env)
 {
 	size_t	i;
 
@@ -84,7 +98,6 @@ static void	fill_genv(t_env *e, char **env)
 
 t_env		*get_env(char **env)
 {
-
 	t_env *e;
 
 	if ((e = ft_memalloc(sizeof(t_env))) == NULL)

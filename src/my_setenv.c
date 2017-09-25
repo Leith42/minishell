@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   my_setenv.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aazri <aazri@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/25 11:46:01 by aazri             #+#    #+#             */
+/*   Updated: 2017/09/25 12:15:29 by aazri            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-size_t			get_var_line(char *var, t_env *env)
+size_t		get_var_line(char *var, t_env *env)
 {
 	size_t	i;
 	size_t	var_len;
@@ -21,8 +33,8 @@ size_t			get_var_line(char *var, t_env *env)
 
 static int	new_and_cpy(size_t size, char *variable, t_env *env)
 {
-	size_t i;
-	char **new;
+	size_t	i;
+	char	**new;
 
 	if ((new = ft_memalloc(sizeof(char *) * (size))) == NULL)
 		return (ERROR);
@@ -49,12 +61,14 @@ void		add_new_var(size_t line, char **args, t_env *env)
 	name = ft_strjoin(args[0], "=");
 	if ((args[1][0] == '"') && (args[1][ft_strlen(args[1]) - 1]) == '"')
 	{
-		if (name == NULL || (name_and_value = ft_strjoin(name, args[1] + 1)) == NULL)
+		if (name == NULL || \
+			(name_and_value = ft_strjoin(name, args[1] + 1)) == NULL)
 			exit_minishell(env, EXIT_FAILURE);
 		name_and_value[ft_strlen(name_and_value) - 1] = '\0';
 	}
-	else if (name == NULL || (name_and_value = ft_strjoin(name, args[1])) == NULL)
-			exit_minishell(env, EXIT_FAILURE);
+	else if (name == NULL || \
+		(name_and_value = ft_strjoin(name, args[1])) == NULL)
+		exit_minishell(env, EXIT_FAILURE);
 	ft_strdel(&name);
 	if (env->env_var[line] != NULL)
 	{
@@ -62,7 +76,7 @@ void		add_new_var(size_t line, char **args, t_env *env)
 		env->env_var[line] = name_and_value;
 	}
 	else if ((new_and_cpy(line + 2, name_and_value, env)) == ERROR)
-			exit_minishell(env, EXIT_FAILURE);
+		exit_minishell(env, EXIT_FAILURE);
 }
 
 int			my_setenv(t_env *env, char **args)
@@ -71,7 +85,8 @@ int			my_setenv(t_env *env, char **args)
 
 	if ((args[0] == NULL) || (args[1] == NULL) || (args[2] != NULL))
 	{
-		print_error("unsetenv: invalid number of arguments.\nusage: unsetenv [name] [value]");
+		print_error("setenv: invalid number of arguments.");
+		print_error("usage: setenv [name] [value]");
 		return (false);
 	}
 	line = get_var_line(ft_strjoin(args[0], "="), env);

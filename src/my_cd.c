@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   my_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aazri <aazri@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/25 11:46:56 by aazri             #+#    #+#             */
+/*   Updated: 2017/09/25 11:53:02 by aazri            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	change_oldpwd_var(char *old_pwd, t_env *env)
@@ -25,7 +37,6 @@ static int	change_working_dir(char *new_path, char *working_dir, t_env *env)
 {
 	if (chdir(new_path) == ERROR)
 	{
-
 		if (access(new_path, F_OK) == -1)
 			ft_printf("cd: no such file or directory: %s\n", new_path);
 		else if (access(new_path, R_OK) == -1)

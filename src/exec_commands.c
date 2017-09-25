@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_commands.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aazri <aazri@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/25 11:47:53 by aazri             #+#    #+#             */
+/*   Updated: 2017/09/25 12:01:25 by aazri            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static int execute(char *cmd_path, char **cmd_with_args, t_env *env)
+static int	execute(char *cmd_path, char **cmd_with_args, t_env *env)
 {
 	pid_t	pid;
 
@@ -18,23 +30,20 @@ static int execute(char *cmd_path, char **cmd_with_args, t_env *env)
 	return (true);
 }
 
-static int check_if_bin(char **path, char **cmd_with_args, t_env *env)
+static int	check_if_bin(char **path, char **cmd_with_args, t_env *env)
 {
 	char		*cmd_path;
 	struct stat	s;
-	size_t 		i;
+	size_t		i;
 
-	i = 0;
 	cmd_path = NULL;
-	if (path == NULL)
-		return (false);
-	while (path[i] != NULL)
+	i = 0;
+	while (path && path[i] != NULL)
 	{
 		if ((cmd_path = ft_strjoin(path[i], cmd_with_args[0])) == NULL)
-		{
 			exit_minishell(env, EXIT_FAILURE);
-		}
-		if (lstat(cmd_path, &s) != ERROR && s.st_mode & S_IFREG && s.st_mode & S_IXUSR)
+		if (lstat(cmd_path, &s) != ERROR \
+		&& s.st_mode & S_IFREG && s.st_mode & S_IXUSR)
 		{
 			free_str_array(path);
 			execute(cmd_path, cmd_with_args, env);
@@ -49,7 +58,7 @@ static int check_if_bin(char **path, char **cmd_with_args, t_env *env)
 	return (false);
 }
 
-static int check_if_path(char **cmd_with_args, t_env *env)
+static int	check_if_path(char **cmd_with_args, t_env *env)
 {
 	char			*home;
 	struct stat		s;
@@ -75,7 +84,7 @@ static int check_if_path(char **cmd_with_args, t_env *env)
 	return (false);
 }
 
-static int check_if_builtin(char **cmd_with_args, t_env *env)
+static int	check_if_builtin(char **cmd_with_args, t_env *env)
 {
 	if (ft_strequ(cmd_with_args[0], CD) == true)
 		my_cd(env, cmd_with_args + 1);
@@ -97,7 +106,7 @@ static int check_if_builtin(char **cmd_with_args, t_env *env)
 	return (true);
 }
 
-int 	exec_commands(t_env *env)
+int			exec_commands(t_env *env)
 {
 	unsigned int	i;
 	char			**cmd_with_args;
@@ -115,7 +124,8 @@ int 	exec_commands(t_env *env)
 				&& check_if_bin(get_path(env), cmd_with_args, env) == false
 				&& check_if_path(cmd_with_args, env) == false)
 			{
-				ft_printf("minishell: command not found: %s\n", cmd_with_args[0]);
+				ft_printf("minishell: command not found: %s\n", \
+				cmd_with_args[0]);
 			}
 			free_str_array(cmd_with_args);
 		}
